@@ -12,17 +12,6 @@
 #             csv_writer.writerow(line)
 
 import pandas as pd
-import streamlit as st
-
-def load_data():
-    df = pd.read_csv('matches.csv')
-    return df
-
-df = load_data()
-
-st.title("IPL Match Visualizer")
-st.write("Here is a sample of the dataset:")
-st.dataframe(df.head())
 
 
 
