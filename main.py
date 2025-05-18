@@ -268,4 +268,4 @@ st.pyplot(fig)
 # Summary
 most_nailbiting_season = nail_biters_by_season.idxmax()
 nailbiter_count = nail_biters_by_season.max()
-st.markdown(f"###The most nail-biters happened in **{most_nailbiting_season}** with **{nailbiter_count}** total close matches!")
+st.markdown(f"### The most nail-biters happened in **{most_nailbiting_season}** with **{nailbiter_count}** total close matches!")
