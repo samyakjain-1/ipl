@@ -34,30 +34,16 @@ def load_and_clean_data():
         "Delhi Daredevils": "Delhi Capitals",
         "Kings XI Punjab": "Punjab Kings",
         "Rising Pune Supergiant": "Rising Pune Supergiants",
-        "Royal Challengers Bengaluru": "Royal Challengers Bangalore",
-        "Gujarat Lions": "Gujarat Titans",  # optional
+        "Royal Challengers Bangalore": "Royal Challengers Bengaluru",
     }
     
     for col in ["team1", "team2", "toss_winner", "winner"]:
         df[col] = df[col].replace(team_name_mapping)
         
-    df["season"] = df["season"].apply(normalize_season)
-
+    
+    df["season"] = df["date"].dt.year
     return df
 
-def normalize_season(season_raw):
-    try:
-        s = str(season_raw).strip()
-        if "/" in s:
-            # Handle "2007/08", "2019/20" → extract second part and convert to 4-digit year
-            second_part = s.split("/")[-1]
-            year = int(second_part)
-            return 2000 + year if year < 100 else year
-        else:
-            year = int(float(s))
-            return year if year >= 2008 else 2000 + year  # IPL started in 2008
-    except:
-        return None  # Return None if broken
 
 
 
