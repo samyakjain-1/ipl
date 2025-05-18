@@ -40,6 +40,8 @@ def load_and_clean_data():
     
     for col in ["team1", "team2", "toss_winner", "winner"]:
         df[col] = df[col].replace(team_name_mapping)
+        
+    df["season"] = df["season"].apply(lambda x: int(x.split("/")[-1]) if "/" in x else int(x))
 
     return df
 
