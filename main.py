@@ -13,6 +13,7 @@
 
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 
 
 def load_and_clean_data():
@@ -20,8 +21,11 @@ def load_and_clean_data():
     
     #clean data
     df = df.drop(columns=["method"], errors="ignore")
+    df = df.dropna(subset=["winner"])
     df["super_over"] = df["super_over"].map({"Y": True, "N": False})
     df["player_of_match"] = df["player_of_match"].fillna("No player of match")
+    df["city"] = df["city"].fillna("Unknown")
+    df["date"] = pd.to_datetime(df["date"])
     df["umpire1"] = df["umpire1"].fillna("No umpire")
     df["umpire2"] = df["umpire2"].fillna("No umpire")
 
@@ -34,8 +38,29 @@ st.title("IPL Match Visualizer")
 st.write("Here is a sample of the dataset:")
 st.dataframe(df)
 
+#match wins visualization
+st.title("IPL Match Wins Visualization")
+st.markdown("### How many matches has each team won?")
 
+# Count how many times each team has won
+win_counts = df["winner"].value_counts().sort_values(ascending=False)
 
+#dropdown
+teams = win_counts.index.tolist()
+selected_team = st.selectbox("Select a team to highlight:", teams)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars = ax.bar(win_counts.index, win_counts.values, color='gray')
+bars[teams.index(selected_team)].set_color('orange')
+
+ax.set_title("Total Matches Won by Each IPL Team")
+ax.set_ylabel("Number of Wins")
+ax.set_xticklabels(win_counts.index, rotation=45, ha='right')
+
+st.pyplot(fig)
+
+# Summary
+st.markdown(f"### 🏏 {selected_team} has won **{win_counts[selected_team]}** matches in total.")
 
 
 
