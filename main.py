@@ -58,27 +58,64 @@ st.dataframe(df)
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
 
-# Count wins and calculate percentages
+
+team_abbr = {
+    "Mumbai Indians": "MI",
+    "Chennai Super Kings": "CSK",
+    "Royal Challengers Bangalore": "RCB",
+    "Kolkata Knight Riders": "KKR",
+    "Sunrisers Hyderabad": "SRH",
+    "Delhi Capitals": "DC",
+    "Punjab Kings": "PBKS",
+    "Rajasthan Royals": "RR",
+    "Gujarat Titans": "GT",
+    "Lucknow Super Giants": "LSG",
+    "Deccan Chargers": "DCC",
+    "Rising Pune Supergiants": "RPS",
+    "Pune Warriors": "PWI",
+    "Gujarat Lions": "GL"
+}
+# Count wins and calculate %
 win_counts = df["winner"].value_counts().sort_values(ascending=False)
 total_wins = win_counts.sum()
 win_percentages = (win_counts / total_wins * 100).round(2)
 
-# Prepare dataframe
 win_df = pd.DataFrame({
     "Team": win_counts.index,
     "Wins": win_counts.values,
     "Win %": win_percentages.values
-}).set_index("Team")
+})
+win_df["Abbreviation"] = win_df["Team"].map(team_abbr)
 
-# Dropdown to select team
-selected_team = st.selectbox("Select a team to inspect:", win_df.index)
+chart = alt.Chart(win_df).mark_bar().encode(
+    x=alt.X("Abbreviation:N", sort="-y", title="Team"),
+    y=alt.Y("Wins:Q", title="Number of Wins"),
+    tooltip=["Team", "Wins", "Win %"]
+).properties(
+    width=700,
+    height=400,
+    title="Total Matches Won by Each IPL Team"
+)
 
-# Show interactive bar chart
-st.bar_chart(win_df["Wins"], use_container_width=True)
+# Add text inside bars
+text = alt.Chart(win_df).mark_text(
+    align="center",
+    baseline="middle",
+    dy=-10,  # adjust vertical position
+    fontSize=12
+).encode(
+    x="Abbreviation:N",
+    y="Wins:Q",
+    text="Wins:Q"
+)
 
-# Summary
-st.markdown(f"### 🏏 {selected_team} has won **{win_df.loc[selected_team, 'Wins']}** matches, which is **{win_df.loc[selected_team, 'Win %']}%** of all wins.")
+# Combine
+st.altair_chart(chart + text, use_container_width=True)
 
+selected_team = st.selectbox("Select a team to inspect:", win_df["Team"])
+row = win_df[win_df["Team"] == selected_team].iloc[0]
+
+st.markdown(f"### 🏏 {selected_team} ({row['Abbreviation']}) has won **{row['Wins']}** matches, which is **{row['Win %']}%** of all wins.")
 
 # win trend over seasons
 st.markdown("---")
