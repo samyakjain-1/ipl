@@ -162,7 +162,7 @@ counts.index = ["Toss Winner Also Won", "Toss Winner Lost"]
 # st.pyplot(fig)
 
 fig, ax = plt.subplots()
-ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["blue", "black"], startangle=90)
+ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["blue", "grey"], startangle=90)
 ax.set_title("Toss Winner vs Match Outcome")
 st.pyplot(fig)
 
