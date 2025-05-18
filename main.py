@@ -14,8 +14,7 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-import plotly.express as px
-import altair as alt
+
 
 
 def load_and_clean_data():
@@ -56,67 +55,46 @@ st.title("IPL Match Visualizer")
 st.write("Here is a sample of the dataset:")
 st.dataframe(df)
 
+#match wins visualization
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
 
-
-team_abbr = {
-    "Mumbai Indians": "MI",
-    "Chennai Super Kings": "CSK",
-    "Royal Challengers Bangalore": "RCB",
-    "Kolkata Knight Riders": "KKR",
-    "Sunrisers Hyderabad": "SRH",
-    "Delhi Capitals": "DC",
-    "Punjab Kings": "PBKS",
-    "Rajasthan Royals": "RR",
-    "Gujarat Titans": "GT",
-    "Lucknow Super Giants": "LSG",
-    "Deccan Chargers": "DCC",
-    "Rising Pune Supergiants": "RPS",
-    "Pune Warriors": "PWI",
-    "Gujarat Lions": "GL"
-}
-# Count wins and calculate %
+# Count how many times each team has won
 win_counts = df["winner"].value_counts().sort_values(ascending=False)
+
+#percentage-wise calculation
 total_wins = win_counts.sum()
 win_percentages = (win_counts / total_wins * 100).round(2)
 
-win_df = pd.DataFrame({
-    "Team": win_counts.index,
-    "Wins": win_counts.values,
-    "Win %": win_percentages.values
-})
-win_df["Abbreviation"] = win_df["Team"].map(team_abbr)
+#dropdown
+teams = win_counts.index.tolist()
+selected_team = st.selectbox("Select a team to highlight:", teams)
 
-chart = alt.Chart(win_df).mark_bar().encode(
-    x=alt.X("Abbreviation:N", sort="-y", title="Team"),
-    y=alt.Y("Wins:Q", title="Number of Wins"),
-    tooltip=["Team", "Wins", "Win %"]
-).properties(
-    width=700,
-    height=400,
-    title="Total Matches Won by Each IPL Team"
-)
 
-# Add text inside bars
-text = alt.Chart(win_df).mark_text(
-    align="center",
-    baseline="middle",
-    dy=-10,  # adjust vertical position
-    fontSize=12
-).encode(
-    x="Abbreviation:N",
-    y="Wins:Q",
-    text="Wins:Q"
-)
+fig, ax = plt.subplots(figsize=(12, 6))
+bars = ax.bar(win_counts.index, win_counts.values, color='gray')
 
-# Combine
-st.altair_chart(chart + text, use_container_width=True)
+# Highlight selected team
+highlight_index = win_counts.index.tolist().index(selected_team)
+bars[highlight_index].set_color('orange')
 
-selected_team = st.selectbox("Select a team to inspect:", win_df["Team"])
-row = win_df[win_df["Team"] == selected_team].iloc[0]
+# Annotate percentage labels above bars
+for i, bar in enumerate(bars):
+    height = bar.get_height()
+    team = win_counts.index[i]
+    percent = win_percentages[team]
+    ax.text(bar.get_x() + bar.get_width()/2, height + 1, f"{percent}%", 
+            ha='center', va='bottom', fontsize=9)
 
-st.markdown(f"### 🏏 {selected_team} ({row['Abbreviation']}) has won **{row['Wins']}** matches, which is **{row['Win %']}%** of all wins.")
+# Style
+ax.set_title("Total Matches Won by Each IPL Team")
+ax.set_ylabel("Number of Wins")
+ax.set_xticklabels(win_counts.index, rotation=45, ha='right')
+
+st.pyplot(fig)
+# Summary
+st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
+
 
 # win trend over seasons
 st.markdown("---")
@@ -130,7 +108,8 @@ selected_team = st.selectbox("Select a team to view win trend over seasons:", so
 team_wins = df[df["winner"] == selected_team]
 season_wins = team_wins["season"].value_counts().sort_index()
 
-# Plot
+# Plot the trend
+import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
 ax.plot(season_wins.index, season_wins.values, marker='o', linewidth=2)
