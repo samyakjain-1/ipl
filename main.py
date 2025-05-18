@@ -137,5 +137,21 @@ peak_wins = season_wins.max()
 st.markdown(f"### 📈 {selected_team}'s peak season was **{peak_year}** with **{peak_wins} wins**.")
 
 
+# toss winner vs match winner
+st.markdown("---")
+st.markdown("## 🎯 Toss Winner vs Match Winner")
 
+
+# Check where toss winner also won the match
+toss_and_match_winner = df["toss_winner"] == df["winner"]
+
+# Count true (same) and false (different)
+counts = toss_and_match_winner.value_counts()
+counts.index = ["Toss Winner Also Won", "Toss Winner Lost"]
+
+
+fig, ax = plt.subplots()
+ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["green", "red"], startangle=90)
+ax.set_title("Toss Winner vs Match Outcome")
+st.pyplot(fig)
 
