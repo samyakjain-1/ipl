@@ -15,6 +15,7 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import plotly.express as px
+import altair as alt
 
 
 def load_and_clean_data():
