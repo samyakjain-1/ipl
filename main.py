@@ -147,7 +147,7 @@ toss_and_match_winner = df["toss_winner"] == df["winner"]
 
 # Count true (same) and false (different)
 counts = toss_and_match_winner.value_counts()
-counts.index = ["Toss Winner Also Won", "Toss Winner Lost"]
+counts.index = ["Toss Winner Won", "Toss Winner Lost"]
 
 # fig, ax = plt.subplots()
 # bars = ax.bar(counts.index, counts.values, color=["green", "red"])
@@ -166,3 +166,27 @@ ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["blue", "grey"], 
 ax.set_title("Toss Winner vs Match Outcome")
 st.pyplot(fig)
 
+
+#stadium-wise matches
+st.markdown("---")
+st.markdown("## 🏟️ Which Stadiums hosted the most matches?")
+
+venue_counts = df["venue"].value_counts().sort_values(ascending=False)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars = ax.bar(venue_counts.index[:10], venue_counts.values[:10], color="steelblue")
+ax.set_title("Top 10 IPL Venues by Number of Matches")
+ax.set_ylabel("Number of Matches")
+ax.set_xlabel("Venue")
+ax.set_xticklabels(venue_counts.index[:10], rotation=45, ha="right")
+
+# Add count labels
+for bar in bars:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2, height + 2, str(height), ha='center', fontsize=9)
+
+st.pyplot(fig)
+
+top_venue = venue_counts.idxmax()
+top_count = venue_counts.max()
+st.markdown(f"### 🏟️ The most matches were played at **{top_venue}** with **{top_count}** total matches.")
