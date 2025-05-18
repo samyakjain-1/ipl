@@ -14,6 +14,7 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 
 def load_and_clean_data():
@@ -70,27 +71,19 @@ teams = win_counts.index.tolist()
 selected_team = st.selectbox("Select a team to highlight:", teams)
 
 
-fig, ax = plt.subplots(figsize=(12, 6))
-bars = ax.bar(win_counts.index, win_counts.values, color='gray')
+fig = px.bar(
+    win_counts.reset_index(),
+    x='index',
+    y='winner',
+    labels={'index': 'Team', 'winner': 'Wins'},
+    title='Matches Won by Each Team',
+    color='index',  # Optional: gives each team a different color
+    hover_data={'index': True, 'winner': True}
+)
 
-# Highlight selected team
-highlight_index = win_counts.index.tolist().index(selected_team)
-bars[highlight_index].set_color('orange')
+fig.update_layout(xaxis_tickangle=-45)
 
-# Annotate percentage labels above bars
-for i, bar in enumerate(bars):
-    height = bar.get_height()
-    team = win_counts.index[i]
-    percent = win_percentages[team]
-    ax.text(bar.get_x() + bar.get_width()/2, height + 1, f"{percent}%", 
-            ha='center', va='bottom', fontsize=9)
-
-# Style
-ax.set_title("Total Matches Won by Each IPL Team")
-ax.set_ylabel("Number of Wins")
-ax.set_xticklabels(win_counts.index, rotation=45, ha='right')
-
-st.pyplot(fig)
+st.plotly_chart(fig, use_container_width=True)
 # Summary
 st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
 

@@ -2,3 +2,4 @@ pandas
 streamlit
 matplotlib
 jupyter
+plotly>=5.18.0
