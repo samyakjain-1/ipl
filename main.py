@@ -22,7 +22,7 @@ df = load_data()
 
 st.title("IPL Match Visualizer")
 st.write("Here is a sample of the dataset:")
-st.dataframe(df.head())
+st.dataframe(df)
 
 
 
