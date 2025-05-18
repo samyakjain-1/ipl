@@ -197,7 +197,7 @@ st.markdown(f"### Suprisingly, Dubai Stadium is also in the top 10 venues across
 st.markdown("---")
 st.markdown("## 🏆 Top Player of the Match Winners")
 
-top_n = st.selectbox("Select number of top players to display:", [5, 10, 50])
+top_n = st.selectbox("Select number of top players to display:", [5, 10, 20, 50])
 
 # Count top N PoM awards
 pom_counts = df["player_of_match"].value_counts().head(top_n)
