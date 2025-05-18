@@ -92,3 +92,31 @@ st.markdown(f"### 🏏 {selected_team} has won **{win_counts[selected_team]}** m
 
 
 
+#win trend over seasons
+team_list = df["winner"].unique()
+selected_team = st.selectbox("Select a team to view win trend over seasons:", sorted(team_list))
+
+# Filter only matches where the selected team won
+team_wins = df[df["winner"] == selected_team]
+
+# Group by season
+season_wins = team_wins["season"].value_counts().sort_index()
+
+fig, ax = plt.subplots()
+ax.plot(season_wins.index, season_wins.values, marker='o', linewidth=2)
+
+ax.set_title(f"{selected_team} - Wins by Season")
+ax.set_xlabel("Season")
+ax.set_ylabel("Wins")
+ax.grid(True)
+
+st.pyplot(fig)
+
+peak_year = season_wins.idxmax()
+peak_wins = season_wins.max()
+
+st.markdown(f"### 📈 {selected_team}'s peak season was **{peak_year}** with **{peak_wins} wins**.")
+
+
+
+
