@@ -97,7 +97,7 @@ st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matche
 
 # win trend over seasons
 st.markdown("---")
-st.markdown("##Win Trend of Each Team Over Seasons")
+st.markdown("## Win Trend of Each Team Over Seasons")
 
 # Dropdown to select team
 team_list = df["winner"].unique()
@@ -122,12 +122,12 @@ st.pyplot(fig)
 # Summary of peak season
 peak_year = season_wins.idxmax()
 peak_wins = season_wins.max()
-st.markdown(f"###{selected_team}'s peak season was **{peak_year}** with **{peak_wins} wins**.")
+st.markdown(f"### {selected_team}'s peak season was **{peak_year}** with **{peak_wins} wins**.")
 
 
 # toss winner vs match winner
 st.markdown("---")
-st.markdown("##Toss Winner vs Match Winner")
+st.markdown("## Toss Winner vs Match Winner")
 
 
 # Check where toss winner also won the match
@@ -151,13 +151,13 @@ counts.index = ["Toss Winner Won", "Toss Winner Lost"]
 
 fig, ax = plt.subplots()
 ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["blue", "grey"], startangle=90)
-ax.set_title("Toss Winner vs Match Outcome")
+ax.set_title("### Toss Winner vs Match Outcome")
 st.pyplot(fig)
 
 
 #stadium-wise matches
 st.markdown("---")
-st.markdown("##Which Stadiums hosted the most matches?")
+st.markdown("## Which Stadiums hosted the most matches?")
 
 venue_counts = df["venue"].value_counts().sort_values(ascending=False)
 
@@ -177,13 +177,13 @@ st.pyplot(fig)
 
 top_venue = venue_counts.idxmax()
 top_count = venue_counts.max()
-st.markdown(f"###The most matches were played at **{top_venue}** with **{top_count}** total matches.")
+st.markdown(f"### The most matches were played at **{top_venue}** with **{top_count}** total matches.")
 st.markdown(f"### Suprisingly, Dubai Stadium is also in the top 10 venues across all seasons.")
 
 
 #top motm
 st.markdown("---")
-st.markdown("##Top Player of the Match Winners")
+st.markdown("## Top Player of the Match Winners")
 
 top_n = st.selectbox("Select number of top players to display:", [5, 10, 50])
 
@@ -207,13 +207,13 @@ st.pyplot(fig)
 # Summary
 top_player = pom_counts.idxmax()
 top_awards = pom_counts.max()
-st.markdown(f"###**{top_player}** leads this list with **{top_awards}** Player of the Match awards.")
+st.markdown(f"### **{top_player}** leads this list with **{top_awards}** Player of the Match awards.")
 
 
 
 #matches player over seasons
 st.markdown("---")
-st.markdown("##Matches Played Each Season")
+st.markdown("## Matches Played Each Season")
 
 # Count matches by season
 matches_per_season = df["season"].value_counts().sort_index()
@@ -235,12 +235,12 @@ st.pyplot(fig)
 # Summary
 max_season = matches_per_season.idxmax()
 max_count = matches_per_season.max()
-st.markdown(f"### 🗓️ The **{max_season}** season had the most matches **{max_count}** in total.")
+st.markdown(f"### The **{max_season}** season had the most matches  **{max_count}** in total.")
 
 
 #nail-biting matches
 st.markdown("---")
-st.markdown("##Nail-Biter Matches by Season")
+st.markdown("## Nail-Biter Matches by Season")
 
 # Filter nail-biters: <9 runs OR <3 wickets OR super over
 nail_biter_matches = df[
