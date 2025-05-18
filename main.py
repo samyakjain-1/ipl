@@ -45,18 +45,20 @@ def load_and_clean_data():
 
     return df
 
-def normalize_season(s):
+def normalize_season(season_raw):
     try:
-        if isinstance(s, str) and "/" in s:
-            # If season like "2007/08" → take second part and convert to 2008
-            end_year = int(s.split("/")[-1])
-            return 2000 + end_year if end_year < 100 else end_year
+        s = str(season_raw).strip()
+        if "/" in s:
+            # Handle "2007/08", "2019/20" → extract second part and convert to 4-digit year
+            second_part = s.split("/")[-1]
+            year = int(second_part)
+            return 2000 + year if year < 100 else year
         else:
-            # Try to cast to int and ensure it's 4-digit
-            s = int(float(s))
-            return s if s > 1000 else 2000 + s
+            year = int(float(s))
+            return year if year >= 2008 else 2000 + year  # IPL started in 2008
     except:
-        return None  # or raise/log depending on how strict you want to be
+        return None  # Return None if broken
+
 
 
 
