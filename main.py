@@ -197,13 +197,15 @@ st.markdown(f"### Suprisingly, Dubai Stadium is also in the top 10 venues across
 st.markdown("---")
 st.markdown("## 🏆 Top Player of the Match Winners")
 
-# Count PoM awards
-pom_counts = df["player_of_match"].value_counts().head(50)
+top_n = st.selectbox("Select number of top players to display:", [5, 10, 50])
 
-# Plot
-fig, ax = plt.subplots(figsize=(12, 10))
+# Count top N PoM awards
+pom_counts = df["player_of_match"].value_counts().head(top_n)
+
+# Plot chart
+fig, ax = plt.subplots(figsize=(12, 6 + top_n * 0.2))
 bars = ax.barh(pom_counts.index[::-1], pom_counts.values[::-1], color="purple")
-ax.set_title("Top 50 Players with Most Player of the Match Awards")
+ax.set_title(f"Top {top_n} Players with Most Player of the Match Awards")
 ax.set_xlabel("Number of Awards")
 ax.set_ylabel("Player")
 
@@ -217,4 +219,4 @@ st.pyplot(fig)
 # Summary
 top_player = pom_counts.idxmax()
 top_awards = pom_counts.max()
-st.markdown(f"### 🏆 **{top_player}** has won the most Player of the Match awards — **{top_awards}** times.")
+st.markdown(f"### 🏆 **{top_player}** leads this list with **{top_awards}** Player of the Match awards.")
