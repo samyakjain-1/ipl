@@ -28,6 +28,18 @@ def load_and_clean_data():
     df["date"] = pd.to_datetime(df["date"])
     df["umpire1"] = df["umpire1"].fillna("No umpire")
     df["umpire2"] = df["umpire2"].fillna("No umpire")
+    
+    # Normalize team names
+    team_name_mapping = {
+        "Delhi Daredevils": "Delhi Capitals",
+        "Kings XI Punjab": "Punjab Kings",
+        "Rising Pune Supergiant": "Rising Pune Supergiants",
+        "Royal Challengers Bengaluru": "Royal Challengers Bangalore",
+        "Gujarat Lions": "Gujarat Titans",  # optional
+    }
+    
+    for col in ["team1", "team2", "toss_winner", "winner"]:
+        df[col] = df[col].replace(team_name_mapping)
 
     return df
 
