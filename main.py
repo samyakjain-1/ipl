@@ -50,7 +50,7 @@ teams = win_counts.index.tolist()
 selected_team = st.selectbox("Select a team to highlight:", teams)
 
 fig, ax = plt.subplots(figsize=(10, 6))
-bars = ax.barh(win_counts.index, win_counts.values, color='gray')
+bars = ax.bar(win_counts.index, win_counts.values, color='gray')
 bars[teams.index(selected_team)].set_color('orange')
 
 ax.set_title("Total Matches Won by Each IPL Team")
