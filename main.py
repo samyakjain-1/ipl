@@ -220,7 +220,7 @@ matches_per_season = df["season"].value_counts().sort_index()
 
 # Plot
 fig, ax = plt.subplots(figsize=(10, 6))
-bars = ax.bar(matches_per_season.index, matches_per_season.values, color="teal")
+bars = ax.bar(matches_per_season.index, matches_per_season.values, color="blue")
 ax.set_title("Number of Matches Played Each IPL Season")
 ax.set_xlabel("Season")
 ax.set_ylabel("Number of Matches")
@@ -237,3 +237,35 @@ max_season = matches_per_season.idxmax()
 max_count = matches_per_season.max()
 st.markdown(f"### 🗓️ The **{max_season}** season had the most matches — **{max_count}** in total.")
 
+
+#nail-biting matches
+st.markdown("---")
+st.markdown("## 😰 Nail-Biter Matches by Season")
+
+# Filter nail-biters: <9 runs OR <3 wickets OR super over
+nail_biter_matches = df[
+    ((df["result"] == "runs") & (df["result_margin"] < 9)) |
+    ((df["result"] == "wickets") & (df["result_margin"] < 3)) |
+    (df["super_over"] == True)
+]
+
+# Count by season
+nail_biters_by_season = nail_biter_matches["season"].value_counts().sort_index()
+
+# Plot
+fig, ax = plt.subplots(figsize=(10, 6))
+bars = ax.bar(nail_biters_by_season.index, nail_biters_by_season.values, color="crimson")
+ax.set_title("Number of Nail-Biter Matches Per Season")
+ax.set_xlabel("Season")
+ax.set_ylabel("Nail-Biters (<9 runs, <3 wickets, or Super Over)")
+
+for bar in bars:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2, height + 0.5, str(height), ha='center')
+
+st.pyplot(fig)
+
+# Summary
+most_nailbiting_season = nail_biters_by_season.idxmax()
+nailbiter_count = nail_biters_by_season.max()
+st.markdown(f"### 😰 The most nail-biters happened in **{most_nailbiting_season}** — with **{nailbiter_count}** total close matches!")
