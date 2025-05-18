@@ -191,3 +191,30 @@ top_venue = venue_counts.idxmax()
 top_count = venue_counts.max()
 st.markdown(f"### 🏟️ The most matches were played at **{top_venue}** with **{top_count}** total matches.")
 st.markdown(f"### Suprisingly, Dubai Stadium is also in the top 10 venues across all seasons.")
+
+
+#top motm
+st.markdown("---")
+st.markdown("## 🏆 Top Player of the Match Winners")
+
+# Count PoM awards
+pom_counts = df["player_of_match"].value_counts().head(50)
+
+# Plot
+fig, ax = plt.subplots(figsize=(12, 10))
+bars = ax.barh(pom_counts.index[::-1], pom_counts.values[::-1], color="purple")
+ax.set_title("Top 50 Players with Most Player of the Match Awards")
+ax.set_xlabel("Number of Awards")
+ax.set_ylabel("Player")
+
+# Add labels
+for bar in bars:
+    width = bar.get_width()
+    ax.text(width + 0.5, bar.get_y() + bar.get_height()/2, str(int(width)), va='center')
+
+st.pyplot(fig)
+
+# Summary
+top_player = pom_counts.idxmax()
+top_awards = pom_counts.max()
+st.markdown(f"### 🏆 **{top_player}** has won the most Player of the Match awards — **{top_awards}** times.")
