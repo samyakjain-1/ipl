@@ -114,8 +114,7 @@ selected_team = st.selectbox("Select a team to view win trend over seasons:", so
 team_wins = df[df["winner"] == selected_team]
 season_wins = team_wins["season"].value_counts().sort_index()
 
-# Plot the trend
-import matplotlib.pyplot as plt
+# Plot
 
 fig, ax = plt.subplots()
 ax.plot(season_wins.index, season_wins.values, marker='o', linewidth=2)
