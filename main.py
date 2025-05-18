@@ -197,7 +197,7 @@ st.markdown(f"### Suprisingly, Dubai Stadium is also in the top 10 venues across
 st.markdown("---")
 st.markdown("## 🏆 Top Player of the Match Winners")
 
-top_n = st.selectbox("Select number of top players to display:", [5, 10, 20, 50])
+top_n = st.selectbox("Select number of top players to display:", [5, 10, 50])
 
 # Count top N PoM awards
 pom_counts = df["player_of_match"].value_counts().head(top_n)
@@ -220,3 +220,32 @@ st.pyplot(fig)
 top_player = pom_counts.idxmax()
 top_awards = pom_counts.max()
 st.markdown(f"### 🏆 **{top_player}** leads this list with **{top_awards}** Player of the Match awards.")
+
+
+
+#matches player over seasons
+st.markdown("---")
+st.markdown("## 🗓️ Matches Played Each Season")
+
+# Count matches by season
+matches_per_season = df["season"].value_counts().sort_index()
+
+# Plot
+fig, ax = plt.subplots(figsize=(10, 6))
+bars = ax.bar(matches_per_season.index, matches_per_season.values, color="teal")
+ax.set_title("Number of Matches Played Each IPL Season")
+ax.set_xlabel("Season")
+ax.set_ylabel("Number of Matches")
+
+# Add labels
+for bar in bars:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2, height + 1, str(height), ha='center', fontsize=9)
+
+st.pyplot(fig)
+
+# Summary
+max_season = matches_per_season.idxmax()
+max_count = matches_per_season.max()
+st.markdown(f"### 🗓️ The **{max_season}** season had the most matches — **{max_count}** in total.")
+
