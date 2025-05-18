@@ -41,9 +41,23 @@ def load_and_clean_data():
     for col in ["team1", "team2", "toss_winner", "winner"]:
         df[col] = df[col].replace(team_name_mapping)
         
-    df["season"] = df["season"].apply(lambda x: int(x.split("/")[-1]) if "/" in x else int(x))
+    df["season"] = df["season"].apply(normalize_season)
 
     return df
+
+def normalize_season(s):
+    try:
+        if isinstance(s, str) and "/" in s:
+            # If season like "2007/08" → take second part and convert to 2008
+            end_year = int(s.split("/")[-1])
+            return 2000 + end_year if end_year < 100 else end_year
+        else:
+            # Try to cast to int and ensure it's 4-digit
+            s = int(float(s))
+            return s if s > 1000 else 2000 + s
+    except:
+        return None  # or raise/log depending on how strict you want to be
+
 
 
 df = load_and_clean_data()
@@ -93,20 +107,23 @@ st.pyplot(fig)
 st.markdown(f"### 🏏 {selected_team} has won **{win_counts[selected_team]}** matches in total.")
 
 
+# win trend over seasons
+st.markdown("---")
+st.markdown("## 📊 Win Trend of Each Team Over Seasons")
 
-#win trend over seasons
+# Dropdown to select team
 team_list = df["winner"].unique()
 selected_team = st.selectbox("Select a team to view win trend over seasons:", sorted(team_list))
 
-# Filter only matches where the selected team won
+# Filter and group by season
 team_wins = df[df["winner"] == selected_team]
-
-# Group by season
 season_wins = team_wins["season"].value_counts().sort_index()
+
+# Plot the trend
+import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
 ax.plot(season_wins.index, season_wins.values, marker='o', linewidth=2)
-
 ax.set_title(f"{selected_team} - Wins by Season")
 ax.set_xlabel("Season")
 ax.set_ylabel("Wins")
@@ -114,9 +131,9 @@ ax.grid(True)
 
 st.pyplot(fig)
 
+# Summary of peak season
 peak_year = season_wins.idxmax()
 peak_wins = season_wins.max()
-
 st.markdown(f"### 📈 {selected_team}'s peak season was **{peak_year}** with **{peak_wins} wins**.")
 
 
