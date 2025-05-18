@@ -55,7 +55,6 @@ st.title("IPL Match Visualizer")
 st.write("Here is a sample of the dataset:")
 st.dataframe(df)
 
-#match wins visualization
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
 
@@ -64,42 +63,21 @@ win_counts = df["winner"].value_counts().sort_values(ascending=False)
 total_wins = win_counts.sum()
 win_percentages = (win_counts / total_wins * 100).round(2)
 
-# Prepare data for Plotly
+# Prepare dataframe
 win_df = pd.DataFrame({
     "Team": win_counts.index,
     "Wins": win_counts.values,
     "Win %": win_percentages.values
-})
+}).set_index("Team")
 
-# Team selector
-selected_team = st.selectbox("Select a team to highlight:", win_df["Team"])
+# Dropdown to select team
+selected_team = st.selectbox("Select a team to inspect:", win_df.index)
 
-# Add highlight column for color
-win_df["Highlight"] = win_df["Team"].apply(lambda x: "Selected Team" if x == selected_team else "Others")
-
-# Create interactive Plotly bar chart
-fig = px.bar(
-    win_df,
-    x="Team",
-    y="Wins",
-    color="Highlight",
-    color_discrete_map={"Selected Team": "orange", "Others": "gray"},
-    hover_data={"Team": True, "Wins": True, "Win %": True, "Highlight": False},
-    title="Total Matches Won by Each IPL Team"
-)
-
-fig.update_layout(
-    xaxis_title="Team",
-    yaxis_title="Number of Wins",
-    xaxis_tickangle=-45,
-    showlegend=False,
-    plot_bgcolor="white"
-)
-
-st.plotly_chart(fig, use_container_width=True)
+# Show interactive bar chart
+st.bar_chart(win_df["Wins"], use_container_width=True)
 
 # Summary
-st.markdown(f"### 🏏 {selected_team} has won **{win_counts[selected_team]}** matches, which is **{win_percentages[selected_team]}%** of all wins.")
+st.markdown(f"### 🏏 {selected_team} has won **{win_df.loc[selected_team, 'Wins']}** matches, which is **{win_df.loc[selected_team, 'Win %']}%** of all wins.")
 
 
 # win trend over seasons
