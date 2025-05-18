@@ -149,9 +149,20 @@ toss_and_match_winner = df["toss_winner"] == df["winner"]
 counts = toss_and_match_winner.value_counts()
 counts.index = ["Toss Winner Also Won", "Toss Winner Lost"]
 
-
 fig, ax = plt.subplots()
-ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["green", "red"], startangle=90)
-ax.set_title("Toss Winner vs Match Outcome")
+bars = ax.bar(counts.index, counts.values, color=["green", "red"])
+ax.set_title("Did the Toss Winner Also Win the Match?")
+ax.set_ylabel("Number of Matches")
+
+# Add count labels on top
+for bar in bars:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2, height + 5, str(height), ha='center')
+
 st.pyplot(fig)
+
+# fig, ax = plt.subplots()
+# ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["green", "red"], startangle=90)
+# ax.set_title("Toss Winner vs Match Outcome")
+# st.pyplot(fig)
 
