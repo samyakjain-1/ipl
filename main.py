@@ -117,6 +117,8 @@ st.altair_chart(bar_chart + text, use_container_width=True)
 st.markdown("---")
 st.markdown("## Win Trend of Each Team Over Seasons")
 
+st.markdown("This section visualizes how many matches a selected IPL team has won in each season. We filtered the dataset by the chosen team using a dropdown, grouped their match wins by season, and displayed the trend as a line chart. This helps analyze consistency and performance spikes across different IPL editions.")
+
 # Dropdown to select team
 team_list = sorted(df["winner"].dropna().unique())
 selected_team = st.selectbox("Select a team to view win trend over seasons:", team_list)
