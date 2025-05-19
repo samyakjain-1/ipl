@@ -61,7 +61,7 @@ st.dataframe(df)
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
 
-# Count wins and percentages
+# Prepare data
 win_counts = df["winner"].value_counts().sort_values(ascending=False)
 total_wins = win_counts.sum()
 win_percentages = (win_counts / total_wins * 100).round(2)
@@ -73,40 +73,63 @@ win_df = pd.DataFrame({
     "Win %": win_percentages.values
 })
 
-# Dropdown to select team
-selected_team = st.selectbox("Select a team to highlight:", win_df["Team"])
+# Create selection object
+selection = alt.selection_single(fields=['Team'], empty='none')
 
-# Add a column to differentiate selected team
-win_df["Highlight"] = win_df["Team"].apply(lambda x: "Selected" if x == selected_team else "Other")
+# Add a Highlight field to style selected bar
+win_df['Highlight'] = 'Other'  # Default value; Altair will override based on selection
 
-# Altair chart
-chart = alt.Chart(win_df).mark_bar().encode(
+# Create the bar chart
+bars = alt.Chart(win_df).mark_bar().encode(
     x=alt.X("Team:N", sort="-y"),
     y=alt.Y("Wins:Q"),
-    color=alt.Color("Highlight:N", scale=alt.Scale(domain=["Selected", "Other"], range=["orange", "gray"]), legend=None),
+    color=alt.condition(
+        selection,
+        alt.value('orange'),  # Highlighted color
+        alt.value('gray')     # Default color
+    ),
     tooltip=["Team", "Wins", "Win %"]
+).add_selection(
+    selection
 ).properties(
     width=700,
     height=400,
     title="Total Matches Won by Each IPL Team"
 )
 
-# Add text annotations for percentages
+# Add text labels
 text = alt.Chart(win_df).mark_text(
     align='center',
     baseline='bottom',
-    dy=-5  # move text above bars
+    dy=-5
 ).encode(
     x="Team:N",
     y="Wins:Q",
-    text=alt.Text("Win %:Q", format=".1f")
+    text=alt.Text("Win %:Q", format=".1f"),
+    opacity=alt.condition(selection, alt.value(1), alt.value(0.6))
 )
 
-# Combine and display
-st.altair_chart(chart + text)
+# Combine chart and text
+final_chart = (bars + text)
 
-# Summary
-st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
+# Display chart
+st.altair_chart(final_chart, use_container_width=True)
+
+# Display selected team summary
+if selection.name in st.session_state:
+    selected_team = st.session_state[selection.name]
+else:
+    selected_team = None
+
+# Handle selection manually with session state fallback
+selected_team_dict = st.experimental_get_query_params().get(selection.name)
+if selected_team_dict:
+    selected_team = selected_team_dict[0]
+
+if selected_team and selected_team in win_counts:
+    st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
+else:
+    st.markdown("### Tap a bar to see team details.")
 
 
 # win trend over seasons
