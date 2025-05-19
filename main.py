@@ -115,11 +115,6 @@ st.altair_chart(bar_chart + text, use_container_width=True)
 # Streamlit currently doesn’t bind Altair selection to Python directly
 st.markdown("### Tap a bar to see team details.")
 
-# Use dropdown as a fallback to allow interaction
-if not selected_team:
-    selected_team = st.selectbox("Or select a team manually:", win_df["Team"])
-    st.query_params["team"] = selected_team  # Store in URL
-
 # Summary section
 if selected_team in win_counts:
     st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
