@@ -61,43 +61,42 @@ st.dataframe(df)
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
 
-# Prepare data
+# Count team wins and calculate percentages
 win_counts = df["winner"].value_counts().sort_values(ascending=False)
 total_wins = win_counts.sum()
 win_percentages = (win_counts / total_wins * 100).round(2)
 
-# Create DataFrame
+# Create dataframe for chart
 win_df = pd.DataFrame({
     "Team": win_counts.index,
     "Wins": win_counts.values,
     "Win %": win_percentages.values
 })
 
-# Create selection object
-selection = alt.selection_single(fields=['Team'], empty='none')
+# Get or initialize query param state
+query_params = st.query_params
+selected_team = query_params.get("team")
 
-# Add a Highlight field to style selected bar
-win_df['Highlight'] = 'Other'  # Default value; Altair will override based on selection
+# Define selection object for Altair
+team_select = alt.selection_single(fields=["Team"], name="team")
 
-# Create the bar chart
-bars = alt.Chart(win_df).mark_bar().encode(
+# Altair bar chart
+bar_chart = alt.Chart(win_df).mark_bar().encode(
     x=alt.X("Team:N", sort="-y"),
-    y=alt.Y("Wins:Q"),
+    y="Wins:Q",
     color=alt.condition(
-        selection,
-        alt.value('orange'),  # Highlighted color
-        alt.value('gray')     # Default color
+        team_select,
+        alt.value("orange"),
+        alt.value("gray")
     ),
     tooltip=["Team", "Wins", "Win %"]
-).add_selection(
-    selection
-).properties(
+).add_selection(team_select).properties(
     width=700,
     height=400,
     title="Total Matches Won by Each IPL Team"
 )
 
-# Add text labels
+# Add percentage text above bars
 text = alt.Chart(win_df).mark_text(
     align='center',
     baseline='bottom',
@@ -106,30 +105,24 @@ text = alt.Chart(win_df).mark_text(
     x="Team:N",
     y="Wins:Q",
     text=alt.Text("Win %:Q", format=".1f"),
-    opacity=alt.condition(selection, alt.value(1), alt.value(0.6))
+    opacity=alt.condition(team_select, alt.value(1), alt.value(0.5))
 )
 
-# Combine chart and text
-final_chart = (bars + text)
+# Display interactive chart
+st.altair_chart(bar_chart + text, use_container_width=True)
 
-# Display chart
-st.altair_chart(final_chart, use_container_width=True)
+# Listen for selection in Altair via JavaScript event (manually track clicks)
+# Streamlit currently doesn’t bind Altair selection to Python directly
+st.markdown("### Tap a bar to see team details.")
 
-# Display selected team summary
-if selection.name in st.session_state:
-    selected_team = st.session_state[selection.name]
-else:
-    selected_team = None
+# Use dropdown as a fallback to allow interaction
+if not selected_team:
+    selected_team = st.selectbox("Or select a team manually:", win_df["Team"])
+    st.query_params["team"] = selected_team  # Store in URL
 
-# Handle selection manually with session state fallback
-selected_team_dict = st.query_params().get(selection.name)
-if selected_team_dict:
-    selected_team = selected_team_dict[0]
-
-if selected_team and selected_team in win_counts:
+# Summary section
+if selected_team in win_counts:
     st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
-else:
-    st.markdown("### Tap a bar to see team details.")
 
 
 # win trend over seasons
@@ -145,7 +138,6 @@ team_wins = df[df["winner"] == selected_team]
 season_wins = team_wins["season"].value_counts().sort_index()
 
 # Plot the trend
-import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
 ax.plot(season_wins.index, season_wins.values, marker='o', linewidth=2)
