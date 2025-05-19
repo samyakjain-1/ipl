@@ -191,33 +191,33 @@ st.markdown(f"### The most matches were played at **{top_venue}** with **{top_co
 st.markdown("### Surprisingly, Dubai Stadium is also in the top 10 venues across all seasons.")
 
 
-#top motm
+# Top Player of the Match
 st.markdown("---")
 st.markdown("## Top Player of the Match Winners")
 
+# Dropdown to select top N players
 top_n = st.selectbox("Select number of top players to display:", [5, 10, 20, 50])
 
-# Count top N PoM awards
+# Get top N player-of-the-match counts
 pom_counts = df["player_of_match"].value_counts().head(top_n)
 
-# Plot chart
-fig, ax = plt.subplots(figsize=(12, 6 + top_n * 0.2))
-bars = ax.barh(pom_counts.index[::-1], pom_counts.values[::-1], color="purple")
-ax.set_title(f"Top {top_n} Players with Most Player of the Match Awards")
-ax.set_xlabel("Number of Awards")
-ax.set_ylabel("Player")
+# Convert to DataFrame
+pom_df = pom_counts.reset_index()
+pom_df.columns = ["Player", "Awards"]
+pom_df["Player"] = pom_df["Player"].astype(str)
+pom_df = pom_df.set_index("Player")
 
-# Add labels
-for bar in bars:
-    width = bar.get_width()
-    ax.text(width + 0.5, bar.get_y() + bar.get_height()/2, str(int(width)), va='center')
+# Reverse for "horizontal-like" visual (top players at bottom)
+pom_df = pom_df[::-1]
 
-st.pyplot(fig)
+# Streamlit native bar chart
+st.bar_chart(pom_df)
 
 # Summary
 top_player = pom_counts.idxmax()
 top_awards = pom_counts.max()
 st.markdown(f"### **{top_player}** leads this list with **{top_awards}** Player of the Match awards.")
+
 
 
 
