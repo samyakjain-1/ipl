@@ -126,6 +126,9 @@ season_wins = team_wins["season"].value_counts().sort_index()
 season_wins_df = season_wins.reset_index()
 season_wins_df.columns = ["Season", "Wins"]
 
+# Convert 'Season' to string so Streamlit treats x-axis as categorical
+season_wins_df["Season"] = season_wins_df["Season"].astype(str)
+
 # Streamlit line chart
 st.line_chart(season_wins_df.set_index("Season"))
 
