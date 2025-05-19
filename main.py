@@ -14,6 +14,8 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+# import plotly.express as px
+import altair as alt
 
 
 
@@ -59,39 +61,50 @@ st.dataframe(df)
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
 
-# Count how many times each team has won
+# Count wins and percentages
 win_counts = df["winner"].value_counts().sort_values(ascending=False)
-
-#percentage-wise calculation
 total_wins = win_counts.sum()
 win_percentages = (win_counts / total_wins * 100).round(2)
 
-#dropdown
-teams = win_counts.index.tolist()
-selected_team = st.selectbox("Select a team to highlight:", teams)
+# Create DataFrame
+win_df = pd.DataFrame({
+    "Team": win_counts.index,
+    "Wins": win_counts.values,
+    "Win %": win_percentages.values
+})
 
+# Dropdown to select team
+selected_team = st.selectbox("Select a team to highlight:", win_df["Team"])
 
-fig, ax = plt.subplots(figsize=(12, 6))
-bars = ax.bar(win_counts.index, win_counts.values, color='gray')
+# Add a column to differentiate selected team
+win_df["Highlight"] = win_df["Team"].apply(lambda x: "Selected" if x == selected_team else "Other")
 
-# Highlight selected team
-highlight_index = win_counts.index.tolist().index(selected_team)
-bars[highlight_index].set_color('orange')
+# Altair chart
+chart = alt.Chart(win_df).mark_bar().encode(
+    x=alt.X("Team:N", sort="-y"),
+    y=alt.Y("Wins:Q"),
+    color=alt.Color("Highlight:N", scale=alt.Scale(domain=["Selected", "Other"], range=["orange", "gray"]), legend=None),
+    tooltip=["Team", "Wins", "Win %"]
+).properties(
+    width=700,
+    height=400,
+    title="Total Matches Won by Each IPL Team"
+)
 
-# Annotate percentage labels above bars
-for i, bar in enumerate(bars):
-    height = bar.get_height()
-    team = win_counts.index[i]
-    percent = win_percentages[team]
-    ax.text(bar.get_x() + bar.get_width()/2, height + 1, f"{percent}%", 
-            ha='center', va='bottom', fontsize=9)
+# Add text annotations for percentages
+text = alt.Chart(win_df).mark_text(
+    align='center',
+    baseline='bottom',
+    dy=-5  # move text above bars
+).encode(
+    x="Team:N",
+    y="Wins:Q",
+    text=alt.Text("Win %:Q", format=".1f")
+)
 
-# Style
-ax.set_title("Total Matches Won by Each IPL Team")
-ax.set_ylabel("Number of Wins")
-ax.set_xticklabels(win_counts.index, rotation=45, ha='right')
+# Combine and display
+st.altair_chart(chart + text)
 
-st.pyplot(fig)
 # Summary
 st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
 
