@@ -14,8 +14,9 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-# import plotly.express as px
+import plotly.express as px
 import altair as alt
+
 
 
 
@@ -139,10 +140,9 @@ st.markdown(f"### {selected_team}'s peak season was **{peak_year}** with **{peak
 
 
 
-# toss winner vs match winner
+# Toss winner vs match winner
 st.markdown("---")
 st.markdown("## Toss Winner vs Match Winner")
-
 
 # Check where toss winner also won the match
 toss_and_match_winner = df["toss_winner"] == df["winner"]
@@ -151,22 +151,21 @@ toss_and_match_winner = df["toss_winner"] == df["winner"]
 counts = toss_and_match_winner.value_counts()
 counts.index = ["Toss Winner Won", "Toss Winner Lost"]
 
-# fig, ax = plt.subplots()
-# bars = ax.bar(counts.index, counts.values, color=["green", "red"])
-# ax.set_title("Did the Toss Winner Also Win the Match?")
-# ax.set_ylabel("Number of Matches")
+# Convert to DataFrame for Plotly
+toss_df = counts.reset_index()
+toss_df.columns = ["Outcome", "Count"]
 
-# # Add count labels on top
-# for bar in bars:
-#     height = bar.get_height()
-#     ax.text(bar.get_x() + bar.get_width()/2, height + 5, str(height), ha='center')
+# Plotly pie chart
+fig = px.pie(
+    toss_df,
+    names="Outcome",
+    values="Count",
+    title="Toss Winner vs Match Outcome",
+    color_discrete_sequence=["blue", "grey"]
+)
 
-# st.pyplot(fig)
-
-fig, ax = plt.subplots()
-ax.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=["blue", "grey"], startangle=90)
-ax.set_title("### Toss Winner vs Match Outcome")
-st.pyplot(fig)
+# Display in Streamlit
+st.plotly_chart(fig)
 
 
 #stadium-wise matches
