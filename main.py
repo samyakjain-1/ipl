@@ -145,7 +145,7 @@ st.markdown(f"### {selected_team}'s peak season was **{peak_year}** with **{peak
 # Toss winner vs match winner
 st.markdown("---")
 st.markdown("## Toss Winner vs Match Winner")
-
+st.markdown("This chart compares the number of times the team that won the toss also won the match versus when they didn't. We created a Boolean condition to check if the toss winner equals the match winner and then counted those outcomes. The pie chart shows how often toss-winning teams convert their advantage into a match win — offering insight into how critical the toss might be in IPL outcomes.")
 # Check where toss winner also won the match
 toss_and_match_winner = df["toss_winner"] == df["winner"]
 
@@ -173,6 +173,12 @@ st.plotly_chart(fig)
 # Stadium-wise matches
 st.markdown("---")
 st.markdown("## Which Stadiums hosted the most matches?")
+st.markdown("""
+🏟️ Here, we ranked the top 10 stadiums by the total number of IPL matches they've hosted. 
+The data is grouped by the "venue" column and sorted to display the venues with the most matches. 
+This bar chart helps us see which stadiums are most frequently used across IPL seasons and includes 
+an observation about Dubai's rise as a venue.
+""")
 
 # Get top 10 venues by number of matches
 venue_counts = df["venue"].value_counts().sort_values(ascending=False).head(10)
@@ -196,6 +202,12 @@ st.markdown("### Surprisingly, Dubai Stadium is also in the top 10 venues across
 # Top Player of the Match
 st.markdown("---")
 st.markdown("## Top Player of the Match Winners")
+st.markdown("""
+🏅 This section showcases the players with the most "Player of the Match" awards in IPL history. 
+A dropdown allows users to select the top 5, 10, 20, or 50 players. We counted appearances of each 
+player in the "player_of_match" column and plotted the selected top ones. This visual highlights 
+the most impactful and consistent match-winning players.
+""")
 
 # Dropdown to select top N players
 top_n = st.selectbox("Select number of top players to display:", [5, 10, 20, 50])
@@ -226,6 +238,12 @@ st.markdown(f"### **{top_player}** leads this list with **{top_awards}** Player 
 # Matches Played Each Season
 st.markdown("---")
 st.markdown("## Matches Played Each Season")
+st.markdown("""
+📆 This bar chart displays how many IPL matches were played in each season. We counted matches by 
+the "season" field and plotted them chronologically. This gives insight into how the tournament has 
+evolved in scale and format — including seasons with more playoff matches or special circumstances 
+like COVID affecting schedule size.
+""")
 
 # Count matches by season
 matches_per_season = df["season"].value_counts().sort_index()
@@ -249,6 +267,12 @@ st.markdown(f"### The **{max_season}** season had the most matches — **{max_co
 # Nail-Biter Matches by Season
 st.markdown("---")
 st.markdown("## Nail-Biter Matches by Season")
+st.markdown("""
+🔥 This section analyzes the most thrilling IPL matches — the "nail-biters." We defined a match as 
+a nail-biter if it was decided by less than 9 runs, fewer than 3 wickets, or went to a Super Over. 
+After filtering such close matches, we counted how many occurred in each season and displayed the 
+results. This helps highlight which IPL seasons had the most edge-of-your-seat finishes.
+""")
 
 # Filter nail-biters: <9 runs OR <3 wickets OR super over
 nail_biter_matches = df[
