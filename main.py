@@ -221,31 +221,27 @@ st.markdown(f"### **{top_player}** leads this list with **{top_awards}** Player 
 
 
 
-#matches player over seasons
+# Matches Played Each Season
 st.markdown("---")
 st.markdown("## Matches Played Each Season")
 
 # Count matches by season
 matches_per_season = df["season"].value_counts().sort_index()
 
-# Plot
-fig, ax = plt.subplots(figsize=(10, 6))
-bars = ax.bar(matches_per_season.index, matches_per_season.values, color="blue")
-ax.set_title("Number of Matches Played Each IPL Season")
-ax.set_xlabel("Season")
-ax.set_ylabel("Number of Matches")
+# Convert to DataFrame
+season_df = matches_per_season.reset_index()
+season_df.columns = ["Season", "Matches"]
+season_df["Season"] = season_df["Season"].astype(str)  # Treat x-axis as categorical
+season_df = season_df.set_index("Season")
 
-# Add labels
-for bar in bars:
-    height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2, height + 1, str(height), ha='center', fontsize=9)
-
-st.pyplot(fig)
+# Streamlit bar chart
+st.bar_chart(season_df)
 
 # Summary
 max_season = matches_per_season.idxmax()
 max_count = matches_per_season.max()
-st.markdown(f"### The **{max_season}** season had the most matches  **{max_count}** in total.")
+st.markdown(f"### The **{max_season}** season had the most matches — **{max_count}** in total.")
+
 
 
 #nail-biting matches
