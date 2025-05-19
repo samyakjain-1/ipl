@@ -244,7 +244,7 @@ st.markdown(f"### The **{max_season}** season had the most matches — **{max_co
 
 
 
-#nail-biting matches
+# Nail-Biter Matches by Season
 st.markdown("---")
 st.markdown("## Nail-Biter Matches by Season")
 
@@ -258,18 +258,14 @@ nail_biter_matches = df[
 # Count by season
 nail_biters_by_season = nail_biter_matches["season"].value_counts().sort_index()
 
-# Plot
-fig, ax = plt.subplots(figsize=(10, 6))
-bars = ax.bar(nail_biters_by_season.index, nail_biters_by_season.values, color="crimson")
-ax.set_title("Number of Nail-Biter Matches Per Season")
-ax.set_xlabel("Season")
-ax.set_ylabel("Nail-Biters")
+# Convert to DataFrame for Streamlit
+nailbiter_df = nail_biters_by_season.reset_index()
+nailbiter_df.columns = ["Season", "Nail-Biters"]
+nailbiter_df["Season"] = nailbiter_df["Season"].astype(str)
+nailbiter_df = nailbiter_df.set_index("Season")
 
-for bar in bars:
-    height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2, height + 0.5, str(height), ha='center')
-
-st.pyplot(fig)
+# Display chart
+st.bar_chart(nailbiter_df)
 
 # Summary
 most_nailbiting_season = nail_biters_by_season.idxmax()
