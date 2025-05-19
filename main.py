@@ -191,7 +191,7 @@ venue_df = venue_df.set_index("Venue")
 
 # Display chart
 st.bar_chart(venue_df)
-
+#added a summary
 # Add summary
 top_venue = venue_counts.idxmax()
 top_count = venue_counts.max()
