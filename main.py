@@ -122,7 +122,7 @@ else:
     selected_team = None
 
 # Handle selection manually with session state fallback
-selected_team_dict = st.experimental_get_query_params().get(selection.name)
+selected_team_dict = st.query_params().get(selection.name)
 if selected_team_dict:
     selected_team = selected_team_dict[0]
 
