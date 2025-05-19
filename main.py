@@ -305,3 +305,16 @@ st.bar_chart(nailbiter_df)
 most_nailbiting_season = nail_biters_by_season.idxmax()
 nailbiter_count = nail_biters_by_season.max()
 st.markdown(f"### The most nail-biters happened in **{most_nailbiting_season}** with **{nailbiter_count}** total close matches!")
+
+st.markdown("---")
+st.markdown("## 🙏 Acknowledgements")
+
+st.markdown("""
+This project is based on publicly available IPL match data and was built using:
+
+- 🐍 **Python**
+- 📊 **Pandas** for data handling
+- 📈 **Altair**, **Plotly** & **Streamlit** for interactive charts and dashboards
+
+Thanks for checking it out! Let us know if you have feedback or feature ideas — we’d love to hear from you!
+""")
