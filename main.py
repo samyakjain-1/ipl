@@ -21,7 +21,7 @@ import altair as alt
 
 
 def load_and_clean_data():
-    df = pd.read_csv('matches.csv')
+    df = pd.read_csv('./data/matches.csv')
     
     #clean data
     df = df.drop(columns=["method"], errors="ignore")
