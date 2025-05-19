@@ -61,6 +61,14 @@ st.dataframe(df)
 #match wins visualization
 st.title("IPL Match Wins Visualization")
 st.markdown("### How many matches has each team won?")
+st.markdown("""
+🏆 This interactive bar chart displays the total number of matches won by each IPL team throughout 
+the tournament's history. We calculated the number of wins using the "winner" column and also computed 
+each team's win percentage relative to the total matches. You can click on any team in the chart to 
+highlight it and view its stats. The chart also displays the win percentage above each bar to give a 
+clearer picture of relative performance. This visualization helps fans compare overall success and 
+dominance of different IPL teams over the years.
+""")
 
 # Count team wins and calculate percentages
 win_counts = df["winner"].value_counts().sort_values(ascending=False)
