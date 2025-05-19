@@ -173,23 +173,16 @@ st.markdown("---")
 st.markdown("## Which Stadiums hosted the most matches?")
 
 # Get top 10 venues by number of matches
-venue_counts = df["venue"].value_counts().sort_values(ascending=False)
-top_venues_df = venue_counts.head(10).reset_index()
-top_venues_df.columns = ["Venue", "Matches"]
+venue_counts = df["venue"].value_counts().sort_values(ascending=False).head(10)
 
-# Plotly bar chart
-fig = px.bar(
-    top_venues_df,
-    x="Venue",
-    y="Matches",
-    title="Top 10 IPL Venues by Number of Matches",
-    text="Matches"
-)
-fig.update_traces(textposition="outside")
-fig.update_layout(xaxis_tickangle=-45)
+# Convert to DataFrame for st.bar_chart
+venue_df = venue_counts.reset_index()
+venue_df.columns = ["Venue", "Matches"]
+venue_df["Venue"] = venue_df["Venue"].astype(str)  # Ensure x-axis is treated as categorical
+venue_df = venue_df.set_index("Venue")
 
-# Display the chart
-st.plotly_chart(fig)
+# Display chart
+st.bar_chart(venue_df)
 
 # Add summary
 top_venue = venue_counts.idxmax()
