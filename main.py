@@ -316,5 +316,5 @@ This project is based on publicly available IPL match data and was built using:
 - 📊 **Pandas** for data handling
 - 📈 **Altair**, **Plotly** & **Streamlit** for interactive charts and dashboards
 
-Thanks for checking it out! Let us know if you have feedback or feature ideas — we’d love to hear from you!
+Thanks for checking it out!
 """)
