@@ -168,30 +168,34 @@ fig = px.pie(
 st.plotly_chart(fig)
 
 
-#stadium-wise matches
+# Stadium-wise matches
 st.markdown("---")
 st.markdown("## Which Stadiums hosted the most matches?")
 
+# Get top 10 venues by number of matches
 venue_counts = df["venue"].value_counts().sort_values(ascending=False)
+top_venues_df = venue_counts.head(10).reset_index()
+top_venues_df.columns = ["Venue", "Matches"]
 
-fig, ax = plt.subplots(figsize=(10, 6))
-bars = ax.bar(venue_counts.index[:10], venue_counts.values[:10], color="steelblue")
-ax.set_title("Top 10 IPL Venues by Number of Matches")
-ax.set_ylabel("Number of Matches")
-ax.set_xlabel("Venue")
-ax.set_xticklabels(venue_counts.index[:10], rotation=45, ha="right")
+# Plotly bar chart
+fig = px.bar(
+    top_venues_df,
+    x="Venue",
+    y="Matches",
+    title="Top 10 IPL Venues by Number of Matches",
+    text="Matches"
+)
+fig.update_traces(textposition="outside")
+fig.update_layout(xaxis_tickangle=-45)
 
-# Add count labels
-for bar in bars:
-    height = bar.get_height()
-    ax.text(bar.get_x() + bar.get_width()/2, height + 2, str(height), ha='center', fontsize=9)
+# Display the chart
+st.plotly_chart(fig)
 
-st.pyplot(fig)
-
+# Add summary
 top_venue = venue_counts.idxmax()
 top_count = venue_counts.max()
 st.markdown(f"### The most matches were played at **{top_venue}** with **{top_count}** total matches.")
-st.markdown(f"### Suprisingly, Dubai Stadium is also in the top 10 venues across all seasons.")
+st.markdown("### Surprisingly, Dubai Stadium is also in the top 10 venues across all seasons.")
 
 
 #top motm
