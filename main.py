@@ -111,14 +111,6 @@ text = alt.Chart(win_df).mark_text(
 # Display interactive chart
 st.altair_chart(bar_chart + text, use_container_width=True)
 
-# Listen for selection in Altair via JavaScript event (manually track clicks)
-# Streamlit currently doesn’t bind Altair selection to Python directly
-st.markdown("### Tap a bar to see team details.")
-
-# Summary section
-if selected_team in win_counts:
-    st.markdown(f"### {selected_team} has won **{win_counts[selected_team]}** matches in total.")
-
 
 # win trend over seasons
 st.markdown("---")
