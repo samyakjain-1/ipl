@@ -77,6 +77,10 @@ win_df = pd.DataFrame({
 query_params = st.query_params
 selected_team = query_params.get("team")
 
+# 🔹 Dropdown FIRST
+selected_team = st.selectbox("Select a team to highlight:", win_df["Team"], index=win_df["Team"].tolist().index(default_team))
+st.query_params["team"] = selected_team 
+
 # Define selection object for Altair
 team_select = alt.selection_single(fields=["Team"], name="team")
 
