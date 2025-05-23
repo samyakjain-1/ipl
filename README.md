@@ -82,7 +82,7 @@ Building this project wasn’t always straightforward. Here are a few challenges
 - **Some years showed up as 2,008 instead of 2008**  
   → This was due to number formatting, so I converted year values to text
 
-- **Some tools didn’t let us track what the user clicked on**  
+- **Some tools didn’t let me track what the user clicked on**  
   → I used Streamlit’s built-in `query_params` feature to remember user selections
 
 - **Showing too much data at once could be overwhelming**  
@@ -107,6 +107,6 @@ This project is based on publicly available IPL match data and was built using:
 - 📊 Pandas for data handling
 - 📈 Altair, Plotly & Streamlit for interactive charts and dashboards
 
-Thanks for checking it out! Let us know if you have feedback or feature ideas — we’d love to hear from you!
+Thanks for checking it out! Let me know if you have feedback or feature ideas — we’d love to hear from you!
 
 
